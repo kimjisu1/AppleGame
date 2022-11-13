@@ -1,0 +1,112 @@
+{
+  "HomeType": [
+    {
+      "homeId": "Small",
+      "x": 10,
+      "y": 5,
+      "z": 10
+    }
+  ],
+  "GridType": [
+    {
+      "gridId": 0,
+      "gridName": "Floor"
+    },
+    {
+      "gridId": 1,
+      "gridName": "Object"
+    }
+  ],
+  "ItemType": [
+    {
+      "ItemId": 0,
+      "gridId": 1,
+      "prefabName": "GZ_Table_02",
+      "categoryType": 0,
+      "priceType": 0,
+      "title": "Steel Gloves",
+      "description": "Gloves made from steel. Yea.",
+      "slug": "steel-gloves",
+      "stackable": true,
+      "capacity": 99
+    },
+    {
+      "ItemId": 1,
+      "gridId": 1,
+      "prefabName": "GZ_Table_02",
+      "categoryType": 0,
+      "priceType": 0,
+      "title": "golden-sword",
+      "description": "Gloves made from steel. Yea.",
+      "slug": "golden-sword",
+      "stackable": true,
+      "capacity": 99
+    },
+    {
+      "ItemId": 4,
+      "gridId": 1,
+      "prefabName": "GZ_Table_02",
+      "categoryType": 0,
+      "priceType": 0,
+      "title": "cursorGauntlet_bronze",
+      "description": "gagagagaga",
+      "slug": "cursorGauntlet_bronze",
+      "stackable": true,
+      "capacity": 99
+    },
+    {
+      "ItemId": 100,
+      "gridId": 1,
+      "prefabName": "GZ_Table_02",
+      "categoryType": 0,
+      "priceType": 0,
+      "title": "cursorSword_silver",
+      "description": "111111111111",
+      "slug": "cursorSword_silver",
+      "stackable": true,
+      "capacity": 99
+    },
+    {
+      "ItemId": 101,
+      "gridId": 1,
+      "prefabName": "GZ_Table_02",
+      "categoryType": 0,
+      "priceType": 0,
+      "title": "cursorGauntlet_grey",
+      "description": "22222222222222222222",
+      "slug": "cursorGauntlet_grey",
+      "stackable": true,
+      "capacity": 99
+    }
+  ],
+  "InvenItem": [
+    {
+      "itemId": 0,
+      "stack": 5
+    },
+    {
+      "itemId": 1,
+      "stack": 99
+    },
+    {
+      "itemId": 4,
+      "stack": 3
+    },
+    {
+      "itemId": 100,
+      "stack": 2
+    },
+    {
+      "itemId": 101,
+      "stack": 10
+    }
+  ],
+  "RoomItem": [
+    {
+      "itemId": 0,
+      "x": 5,
+      "y": 10,
+      "rotate": 90
+    }
+  ]
+}
