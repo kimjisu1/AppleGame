@@ -12,8 +12,55 @@ public class Inventory : MonoBehaviour
     [HideInInspector] public List<ItemData> itemDataList = new List<ItemData>(); //인벤아이템리스트 - 
     public int slotAmount = 16;
 
-    private ItemDatabase database;
+    private void InitToggle()
+    {
+        GameObject tab = GameObject.Find("go_Tab");
+        Toggle[] togs = tab.GetComponentsInChildren<Toggle>();
+        for (int i = 0; i < togs.Length; i++)
+        {
+            int catrgoryType = i - 1;
+            togs[i].onValueChanged.AddListener((b) => { if (b) OnValueChanged_Tab(catrgoryType); });
+        }
+    }
+    public int categoryIdx;
+    void OnValueChanged_Tab(int categoryType)
+    {
+        categoryIdx = categoryType;
+        for (int i = 0; i < slotList.Count; i++)
+        {
+            slotList[i].itemId = -1;
+        }
+        if (categoryType == -1)
+        {
 
+            for (int i = 0; i < itemDataList.Count; i++)
+            {
+                ItemData itemData = itemDataList[i];
+                itemData.slotId = i;
+                slotList[i].itemId = itemData.invenItem.itemId;
+            }
+        }
+        else
+        {
+            for (int i = 0; i < itemDataList.Count; i++)
+            {
+                ItemData itemData = itemDataList[i];
+                itemData.slotId = -1;
+            }
+            int idx = 0;
+            for (int i = 0; i < itemDataList.Count; i++)
+            {
+                ItemData itemData = itemDataList[i];
+                if (itemData.category == categoryType.ToString())
+                {
+                    itemData.slotId = idx;
+                    idx++;
+                    slotList[i].itemId = itemData.invenItem.itemId;
+                }
+            }
+        }
+        SortItem();
+    }
 
     #region 유니티 함수
     /// <summary>
@@ -21,10 +68,10 @@ public class Inventory : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        database = ItemDatabase.instance;
-
+        InitToggle(); //토글초기화
         InitSlot(); //슬롯초기화
         InitItem(); //아이템초기화
+        OnValueChanged_Tab(-1);
     }
 
     /// <summary>
@@ -39,10 +86,12 @@ public class Inventory : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             CreateOrAddItem(0);
+            OnValueChanged_Tab(categoryIdx);
         }
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             CreateOrAddItem(101);
+            OnValueChanged_Tab(categoryIdx);
         }
         //if (Input.GetKeyDown(KeyCode.Alpha2)) //증가
         //{
@@ -80,9 +129,9 @@ public class Inventory : MonoBehaviour
     /// </summary>
     private void InitItem()
     {
-        for (int i = 0; i < database.db_InvenItem.Count; i++)
+        for (int i = 0; i < ItemDatabase.instance.db_InvenItem.Count; i++)
         {
-            InvenItem invenItem = database.db_InvenItem[i];
+            InvenItem invenItem = ItemDatabase.instance.db_InvenItem[i];
             CreateItem(invenItem, i);
         }
     }
@@ -105,7 +154,7 @@ public class Inventory : MonoBehaviour
         }
         else
         {   //만약 해당아이템이 있다면 -> 수량추가
-            findItemData.leftStack++;  
+            findItemData.leftStack++;
         }
     }
 
@@ -146,10 +195,10 @@ public class Inventory : MonoBehaviour
     private void SortRecursion(int idx)
     {
         ItemData itemData = itemDataList[idx];
-        if(itemData.slotId == 0)
+        if (itemData.slotId < 1)
         {
             return;
-        }    
+        }
         Slot prevSlot = slotList[itemData.slotId - 1];
         Slot curSlot = slotList[itemData.slotId];
         if (prevSlot != null && prevSlot.itemId == -1) //이전꺼가 아이템이 없으면

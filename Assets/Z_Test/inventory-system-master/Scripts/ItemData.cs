@@ -31,12 +31,20 @@ public class ItemData : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         set
         {
             _slotId = value;
+            if (slotId == -1)
+            {
+                transform.SetParent(null);
+                gameObject.SetActive(false);
+                return;
+            }
             Slot slot = inv.slotList[slotId];
-            transform.SetParent(slot.transform, false);
+            transform.SetParent(slot.transform);
+            transform.localPosition = Vector3.zero;
+            gameObject.SetActive(true);
             slot.itemId = invenItem.itemId;
         }
     }
-   
+
     //남은스택
     private int _leftStack;
     public int leftStack
@@ -53,6 +61,14 @@ public class ItemData : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         }
     }
 
+    /// <summary>
+    /// 아이템셋팅
+    /// </summary>
+    /// <param name="itemId"></param>
+    void OnClick_ItemSetting(int itemId)
+    {
+
+    }
 
     public enum eItemState
     {
@@ -111,13 +127,21 @@ public class ItemData : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     public void SetItemData(int slotId, InvenItem invenItem)
     {
         this.invenItem = invenItem;
-        this.slotId = slotId;
-        leftStack = this.invenItem.stack;
-
         ItemType itemType = database.GetItemType(invenItem.itemId);
+        leftStack = this.invenItem.stack;
         gameObject.name = "Item: " + itemType.title;
         category = itemType.categoryType.ToString();
         transform.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Items/" + itemType.slug);
+
+        if (inv.categoryIdx != -1 || inv.categoryIdx == itemType.categoryType)
+        {
+            this.slotId = slotId;
+        }
+        else
+        {
+            this.slotId = -1;
+        }
+   
     }
 
     /// <summary>
@@ -231,6 +255,8 @@ public class ItemData : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         {
             itemState = eItemState.idle;
             leftStack--;
+            int itemId = eventData.pointerDrag.GetComponent<ItemData>().invenItem.itemId;
+            OnClick_ItemSetting(itemId);
         }
         if(itemState == eItemState.hold)
         {
