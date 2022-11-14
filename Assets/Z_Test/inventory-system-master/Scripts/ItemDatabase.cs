@@ -110,6 +110,12 @@ public class InvenItem
         this.itemId = -1;
     }
 
+    public InvenItem(int itemId, int stack)
+    {
+        this.itemId = itemId;
+        this.stack = stack;
+    }
+
     public int itemId { get; set; }
     public int stack { get; set; }
 }

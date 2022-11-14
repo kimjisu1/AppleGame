@@ -1,118 +1,4 @@
-﻿//using UnityEngine;
-//using UnityEngine.UI;
-//using System.Collections;
-//using System.Collections.Generic;
-//using System.Linq;
-
-//public class Inventory : MonoBehaviour
-//{
-//    private ItemDatabase database;
-//    public int slotAmount = 16;
-
-
-//    public GameObject inventorySlot;
-//    public GameObject inventoryItem;
-
-//    [HideInInspector] public List<GameObject> slotList = new List<GameObject>(); //슬롯리스트 - 
-//    [HideInInspector] public List<InvenItem> invenItemList = new List<InvenItem>(); //인벤아이템 - 
-
-//    void Start()
-//    {
-//        database = GetComponent<ItemDatabase>();
-
-//        GameObject slotPanel = GameObject.Find("SlotPanel");
-//        for (int i = 0; i < slotAmount; i++)
-//        {
-//            //해당슬롯 빈 오브젝트정보 셋팅
-//            invenItemList.Add(new InvenItem()); 
-
-//            //슬롯오브젝트 추가
-//            slotList.Add(Instantiate(inventorySlot));
-//            slotList[i].GetComponent<Slot>().slotId = i;
-//            slotList[i].transform.SetParent(slotPanel.transform);
-//        }
-//        AddItem();
-//    }
-
-//    public void SortItem()
-//    {
-//        for (int i = 0; i < invenItemList.Count; i++)
-//        {
-//            if(invenItemList[i].itemId == -1) //비어있다면...
-//            {
-//                invenItemList.RemoveAt(i);
-//            }
-//        }
-//    }
-
-//    public void AddItem(int slotId)
-//    {
-
-//    }
-//   public void RemoveItem(int slotId)
-//    {
-//        //invenItemList.Remove(invenItem);
-//        invenItemList[slotId] = new InvenItem();
-//    }
-
-//    public void AddItem()
-//    {
-//        for (int i = 0; i < database.db_InvenItem.Count; i++)
-//        {
-//            GameObject itemObj = Instantiate(inventoryItem);
-//            itemObj.transform.SetParent(slotList[i].transform);
-//            itemObj.transform.position = Vector2.zero;
-
-//            int itemId = database.db_InvenItem[i].itemId;
-
-//            InvenItem invenItemAdd = database.GetInvenItem(itemId);
-//            invenItemAdd.itemId = itemId;
-//            invenItemList[i] = invenItemAdd;
-
-//            ItemData itemData = slotList[i].GetComponentInChildren<ItemData>();
-//            itemData.invenItem = invenItemAdd;
-//            itemData.database = database;
-//            itemData.slotId = i;
-//            itemData.leftStack = invenItemAdd.stack;
-
-//            ItemType itemTypeAdd = database.GetItemType(itemId);
-//            itemObj.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Items/" + itemTypeAdd.slug);
-
-//            slotList[i].GetComponent<Slot>().itemId = itemId;
-
-//            itemObj.name = "Item: " + itemTypeAdd.title;
-//            //slotList[i].name = "Slot: " + itemTypeAdd.title;
-
-//        }
-
-
-//    }
-
-//}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
@@ -120,30 +6,63 @@ using System.Linq;
 
 public class Inventory : MonoBehaviour
 {
-    private ItemDatabase database;
+    public GameObject inventoryItem;
+    public GameObject inventorySlot;
+    [HideInInspector] public List<Slot> slotList = new List<Slot>(); //슬롯리스트 - 
+    [HideInInspector] public List<ItemData> itemDataList = new List<ItemData>(); //인벤아이템리스트 - 
     public int slotAmount = 16;
 
+    private ItemDatabase database;
 
-    public GameObject inventorySlot;
-    public GameObject inventoryItem;
 
-    [HideInInspector] public List<Slot> slotList = new List<Slot>(); //슬롯리스트 - 
-    //[HideInInspector] public List<InvenItem> invenItemList = new List<InvenItem>(); //인벤아이템 - 
-    [HideInInspector] public List<ItemData> itemDataList = new List<ItemData>(); //인벤아이템 - 
-
-    void Start()
+    #region 유니티 함수
+    /// <summary>
+    /// 스타트
+    /// </summary>
+    private void Start()
     {
-        //database = GetComponent<ItemDatabase>();
         database = ItemDatabase.instance;
 
-        InitItem();
-        AddItem();
+        InitSlot(); //슬롯초기화
+        InitItem(); //아이템초기화
     }
 
     /// <summary>
-    /// 초기셋팅 - 슬롯셋팅, 빈인벤아이템셋팅
+    /// 업데이트
     /// </summary>
-    private void InitItem()
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            SortItem();
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            CreateOrAddItem(0);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            CreateOrAddItem(101);
+        }
+        //if (Input.GetKeyDown(KeyCode.Alpha2)) //증가
+        //{
+        //    slotList[itemDataList[4].slotId].itemId = -1;
+        //    itemDataList[4].slotId++;
+        //}
+        //if (Input.GetKeyDown(KeyCode.Alpha3)) //감소
+        //{
+        //    slotList[itemDataList[4].slotId].itemId = -1;
+        //    itemDataList[4].slotId--;
+        //}
+    }
+    #endregion
+
+
+    #region 아이템 초기화
+    /// <summary>
+    /// 슬롯 초기화 : 슬롯셋팅, 빈인벤아이템셋팅
+    /// </summary>
+    private void InitSlot()
     {
         GameObject slotPanel = GameObject.Find("SlotPanel");
         for (int i = 0; i < slotAmount; i++)
@@ -153,79 +72,81 @@ public class Inventory : MonoBehaviour
             slot.slotId = i;
             slot.itemId = -1;
             slotList.Add(slot);
-
-            //해당슬롯 빈 오브젝트정보 셋팅
-            //invenItemList.Add(new InvenItem());
         }
     }
 
     /// <summary>
-    /// 아이템추가 - 인벤에 있는 아이템들 셋팅
+    /// 아이템 초기화 : 인벤에 있는 아이템들 셋팅
     /// </summary>
-    private void AddItem()
+    private void InitItem()
     {
         for (int i = 0; i < database.db_InvenItem.Count; i++)
         {
-            Slot slot = slotList[i];
-            ItemData itemData = Instantiate(inventoryItem/*, slot.transform*/).GetComponent<ItemData>();
-
-            int itemId = database.db_InvenItem[i].itemId;
-            Debug.Log("itemId: " + itemId);
-            slot.itemId = itemId;
-
-            ItemType itemType = database.GetItemType(itemId);
-            itemData.name = "Item: " + itemType.title;
-
-            InvenItem invenItem = database.GetInvenItem(itemId);
-            invenItem.itemId = itemId;
-            //invenItemList[i] = invenItem;
-
-            itemData.SetItemData(i, invenItem);
-            itemDataList.Add(itemData);
+            InvenItem invenItem = database.db_InvenItem[i];
+            CreateItem(invenItem, i);
+        }
+    }
+    #endregion
 
 
+
+    #region 아이템 생성 / 추가
+    /// <summary>
+    /// 아이템 생성 / 추가
+    /// </summary>
+    /// <param name="itemData"></param>
+    public void CreateOrAddItem(int itemId)
+    {
+        ItemData findItemData = itemDataList.FirstOrDefault(x => x.invenItem.itemId == itemId);
+        if (findItemData == null)
+        {   //해당아이템이 없다면 -> 새로추가
+            CreateItem(new InvenItem(101, 10), slotList.FindIndex(x => x.itemId == -1));
+        }
+        else
+        {   //만약 해당아이템이 있다면 -> 수량추가
+            findItemData.leftStack++;  
         }
     }
 
+    /// <summary>
+    /// 아이템 생성
+    /// </summary>
+    /// <param name="invenItem">아이템종류</param>
+    /// <param name="slotId">어떤슬롯에 추가될 것인지</param>
+    private void CreateItem(InvenItem invenItem, int slotId)
+    {
+        ItemData itemData = Instantiate(inventoryItem).GetComponent<ItemData>();
+
+        Slot slot = slotList[slotId];
+        slot.itemId = invenItem.itemId;
+
+        ItemType itemType = database.GetItemType(invenItem.itemId);
+        itemData.name = "Item: " + itemType.title;
+
+        itemData.SetItemData(slotId, invenItem);
+        itemDataList.Add(itemData);
+    }
+    #endregion
+
+
+
+    #region 아이템 정렬
+    /// <summary>
+    /// 아이템 정렬
+    /// </summary>
     public void SortItem()
     {
         for (int i = 0; i < itemDataList.Count; i++)
         {
-            if (itemDataList[i].slotId == -1) //비어있다면...
-            {
-                //invenItemList.RemoveAt(i);
-                //itemDataList.FirstOrDefault(x=>x.invenItem.itemId)
-            }
+            SortRecursion(i);
         }
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            SortItem();
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2)) //증가
-        {
-            slotList[itemDataList[4].slotId].itemId = -1;
-            itemDataList[4].slotId++;
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha3)) //감소
-        {
-            //if (slotList[itemDataList[4].slotId - 1].itemId == -1)
-            //{
-            //    slotList[itemDataList[4].slotId].itemId = -1;
-            //    itemDataList[4].slotId--;
-            //}
-            itemDataList = itemDataList.OrderBy(x => x.slotId).ToList();
-            for (int i = 0; i < itemDataList.Count; i++)
-            {
-                IsSort(i);
-            }
-        }
-    }
-
-    void IsSort(int idx)
+    /// <summary>
+    /// 아이템정렬 재귀함수
+    /// </summary>
+    /// <param name="idx"></param>
+    private void SortRecursion(int idx)
     {
         ItemData itemData = itemDataList[idx];
         if(itemData.slotId == 0)
@@ -237,119 +158,25 @@ public class Inventory : MonoBehaviour
         if (prevSlot != null && prevSlot.itemId == -1) //이전꺼가 아이템이 없으면
         {
             curSlot.itemId = -1; //현재꺼에 아이템 제거하고
-            itemData.slotId--; //슬롯점프
-            IsSort(idx);
+            itemData.slotId--; //슬롯 한칸 앞으로
+            SortRecursion(idx); //재귀함수
         }
     }
+    #endregion
 
-    public void AddItem(int slotId)
-    {
 
-    }
-    public void RemoveItem(int slotId)
+
+    #region 아이템 제거
+    /// <summary>
+    /// 아이템 제거
+    /// </summary>
+    /// <param name="itemData"></param>
+    public void RemoveItem(ItemData itemData)
     {
-        slotList[slotId].itemId = -1;
+        slotList[itemData.slotId].itemId = -1;
+        itemDataList.Remove(itemData);
+        Destroy(itemData.gameObject);
         SortItem();
     }
+    #endregion
 }
-
-
-
-
-
-//using UnityEngine;
-//using UnityEngine.UI;
-//using System.Collections;
-//using System.Collections.Generic;
-//using System.Linq;
-
-//public class Inventory : MonoBehaviour
-//{
-//    private ItemDatabase database;
-//    public int slotAmount = 16;
-
-
-//    public GameObject inventorySlot;
-//    public GameObject inventoryItem;
-
-//    [HideInInspector] public List<Slot> slotList = new List<Slot>(); //슬롯리스트 - 
-//    //[HideInInspector] public List<InvenItem> invenItemList = new List<InvenItem>(); //인벤아이템 - 저장용
-
-//    void Start()
-//    {
-//        //database = GetComponent<ItemDatabase>();
-//        database = ItemDatabase.instance;
-
-//        InitItem();
-//        AddItem();
-//    }
-
-//    /// <summary>
-//    /// 초기셋팅 - 슬롯셋팅, 빈인벤아이템셋팅
-//    /// </summary>
-//    private void InitItem()
-//    {
-//        GameObject slotPanel = GameObject.Find("SlotPanel");
-//        for (int i = 0; i < slotAmount; i++)
-//        {
-//            //슬롯오브젝트 추가
-//            Slot slot = Instantiate(inventorySlot, slotPanel.transform).GetComponent<Slot>();
-//            slot.slotId = i;
-//            slot.invenItem = new InvenItem();
-//            slotList.Add(slot);
-
-//            //해당슬롯 빈 오브젝트정보 셋팅
-//            //invenItemList.Add(new InvenItem());
-//        }
-//    }
-
-//    /// <summary>
-//    /// 아이템추가 - 인벤에 있는 아이템들 셋팅
-//    /// </summary>
-//    private void AddItem()
-//    {
-//        for (int i = 0; i < database.db_InvenItem.Count; i++)
-//        {
-//            Slot slot = slotList[i];
-
-//            ItemData itemData = Instantiate(inventoryItem, slot.transform).GetComponent<ItemData>();
-
-//            int itemId = database.db_InvenItem[i].itemId;
-
-//            ItemType itemType = database.GetItemType(itemId);
-//            itemData.name = "Item: " + itemType.title;
-
-//            InvenItem invenItem = database.GetInvenItem(itemId);
-//            invenItem.itemId = itemId;
-//            //invenItemList[i] = invenItem;
-
-//            itemData.SetItemData(i, invenItem);
-
-//            slot.invenItem = invenItem;
-//        }
-//    }
-
-//    public void SortItem()
-//    {
-//        for (int i = 0; i < invenItemList.Count; i++)
-//        {
-//            if (invenItemList[i].itemId == -1) //비어있다면...
-//            {
-//                invenItemList.RemoveAt(i);
-//            }
-//        }
-//    }
-
-//    public void AddItem(int slotId)
-//    {
-
-//    }
-//    public void RemoveItem(int slotId)
-//    {
-//        //invenItemList.Remove(invenItem);
-//        invenItemList[slotId] = new InvenItem();
-//    }
-
-
-
-//}
