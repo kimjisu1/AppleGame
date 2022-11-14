@@ -24,9 +24,9 @@
       "prefabName": "GZ_Table_02",
       "categoryType": 0,
       "priceType": 0,
-      "title": "Steel Gloves",
-      "description": "Gloves made from steel. Yea.",
-      "slug": "steel-gloves",
+      "title": "녹색의자",
+      "description": "지극히 평범한 녹색의자",
+      "slug": "1",
       "stackable": true,
       "capacity": 99
     },
@@ -36,9 +36,33 @@
       "prefabName": "GZ_Table_02",
       "categoryType": 0,
       "priceType": 0,
-      "title": "golden-sword",
-      "description": "Gloves made from steel. Yea.",
-      "slug": "golden-sword",
+      "title": "노랑의자",
+      "description": "지극히 평범한 노랑의자",
+      "slug": "2",
+      "stackable": true,
+      "capacity": 99
+    },
+    {
+      "ItemId": 2,
+      "gridId": 1,
+      "prefabName": "GZ_Table_02",
+      "categoryType": 0,
+      "priceType": 0,
+      "title": "침대",
+      "description": "노말침대",
+      "slug": "3",
+      "stackable": true,
+      "capacity": 99
+    },
+    {
+      "ItemId": 3,
+      "gridId": 1,
+      "prefabName": "GZ_Table_02",
+      "categoryType": 0,
+      "priceType": 0,
+      "title": "벽장",
+      "description": "벽짱이다",
+      "slug": "4",
       "stackable": true,
       "capacity": 99
     },
@@ -48,33 +72,93 @@
       "prefabName": "GZ_Table_02",
       "categoryType": 1,
       "priceType": 0,
-      "title": "cursorGauntlet_bronze",
-      "description": "gagagagaga",
-      "slug": "cursorGauntlet_bronze",
+      "title": "파란바닥",
+      "description": "퍼런바닥이다. 별다른특징은 없다.",
+      "slug": "5",
       "stackable": true,
       "capacity": 99
     },
     {
-      "ItemId": 100,
+      "ItemId": 5,
       "gridId": 1,
       "prefabName": "GZ_Table_02",
       "categoryType": 1,
       "priceType": 0,
-      "title": "cursorSword_silver",
-      "description": "111111111111",
-      "slug": "cursorSword_silver",
+      "title": "분홍바닥",
+      "description": "분홍바닥이다. 별다른특징은 없다.",
+      "slug": "6",
       "stackable": true,
       "capacity": 99
     },
     {
-      "ItemId": 101,
+      "ItemId": 6,
+      "gridId": 1,
+      "prefabName": "GZ_Table_02",
+      "categoryType": 1,
+      "priceType": 0,
+      "title": "빨간바닥",
+      "description": "빨간바닥이다. 별다른특징은 없다.",
+      "slug": "7",
+      "stackable": true,
+      "capacity": 99
+    },
+    {
+      "ItemId": 7,
       "gridId": 1,
       "prefabName": "GZ_Table_02",
       "categoryType": 2,
       "priceType": 0,
-      "title": "cursorGauntlet_grey",
-      "description": "22222222222222222222",
-      "slug": "cursorGauntlet_grey",
+      "title": "꽃",
+      "description": "꽃꽃꽃",
+      "slug": "8",
+      "stackable": true,
+      "capacity": 99
+    },
+    {
+      "ItemId": 8,
+      "gridId": 1,
+      "prefabName": "GZ_Table_02",
+      "categoryType": 2,
+      "priceType": 0,
+      "title": "전등",
+      "description": "전등전등",
+      "slug": "9",
+      "stackable": true,
+      "capacity": 99
+    },
+    {
+      "ItemId": 9,
+      "gridId": 1,
+      "prefabName": "GZ_Table_02",
+      "categoryType": 3,
+      "priceType": 0,
+      "title": "스핑냥",
+      "description": "별거없다",
+      "slug": "10",
+      "stackable": true,
+      "capacity": 99
+    },
+    {
+      "ItemId": 10,
+      "gridId": 1,
+      "prefabName": "GZ_Table_02",
+      "categoryType": 3,
+      "priceType": 0,
+      "title": "서닌장",
+      "description": "하트서닌장",
+      "slug": "11",
+      "stackable": true,
+      "capacity": 99
+    },
+    {
+      "ItemId": 11,
+      "gridId": 1,
+      "prefabName": "GZ_Table_02",
+      "categoryType": 3,
+      "priceType": 0,
+      "title": "에그몽",
+      "description": "달걀이다",
+      "slug": "12",
       "stackable": true,
       "capacity": 99
     }
@@ -89,11 +173,43 @@
       "stack": 7
     },
     {
-      "itemId": 4,
+      "itemId": 2,
       "stack": 3
     },
     {
-      "itemId": 100,
+      "itemId": 3,
+      "stack": 2
+    },
+    {
+      "itemId": 4,
+      "stack": 2
+    },
+    {
+      "itemId": 5,
+      "stack": 2
+    },
+    {
+      "itemId": 6,
+      "stack": 2
+    },
+    {
+      "itemId": 7,
+      "stack": 2
+    },
+    {
+      "itemId": 8,
+      "stack": 2
+    },
+    {
+      "itemId": 9,
+      "stack": 2
+    },
+    {
+      "itemId": 10,
+      "stack": 2
+    },
+    {
+      "itemId": 11,
       "stack": 2
     }
   ],

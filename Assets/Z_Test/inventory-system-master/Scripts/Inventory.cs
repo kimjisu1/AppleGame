@@ -54,8 +54,8 @@ public class Inventory : MonoBehaviour
                 if (itemData.category == categoryType.ToString())
                 {
                     itemData.slotId = idx;
+                    slotList[idx].itemId = itemData.invenItem.itemId;
                     idx++;
-                    slotList[i].itemId = itemData.invenItem.itemId;
                 }
             }
         }
