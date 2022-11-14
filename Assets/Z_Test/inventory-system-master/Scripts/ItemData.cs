@@ -357,7 +357,18 @@ using UnityEngine.UI;
 /// </summary>
 public class ItemData : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, IPointerClickHandler
 {
-    [HideInInspector] public int slotId;
+    public int slotId
+    {
+        get => _slotId;
+        set
+        {
+            _slotId = value;
+            Slot slot = inv.slotList[slotId];
+            transform.SetParent(slot.transform, false);
+            slot.itemId = invenItem.itemId;
+        }
+    }
+    private int _slotId;
 
     //public ItemType itemType; //아이템타입과
     [HideInInspector] public InvenItem invenItem; //인벤토리
@@ -371,7 +382,8 @@ public class ItemData : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         set
         {
             _leftStack = value;
-            if(value == 0)
+            stackk = value;
+            if (value == 0)
             {
                 inv.RemoveItem(slotId);
                 Destroy(gameObject);
@@ -379,6 +391,7 @@ public class ItemData : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
             txt_Stack.text = _leftStack.ToString();
         }
     }
+    public int stackk;
 
     private Coroutine coroutine;
 
@@ -440,14 +453,14 @@ public class ItemData : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     {
         database = ItemDatabase.instance;
         inv = GameObject.Find("Inventory").GetComponent<Inventory>();
-        //txt_Stack = transform.GetComponentInChildren<Text>();
         tooltip = inv.GetComponent<Tooltip>();
     }
 
     public void SetItemData(int slotId, InvenItem invenItem)
     {
-        this.slotId = slotId;
+        inv = GameObject.Find("Inventory").GetComponent<Inventory>();
         this.invenItem = invenItem;
+        this.slotId = slotId;
         leftStack = this.invenItem.stack;
         transform.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Items/" + ItemDatabase.instance.db_ItemType[invenItem.itemId].slug);
     }
@@ -570,6 +583,7 @@ public class ItemData : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        Debug.Log("invenItem.itemId: " + invenItem.itemId);
         tooltip.Activate(database.GetItemType(invenItem.itemId));
     }
 

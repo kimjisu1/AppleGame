@@ -128,7 +128,8 @@ public class Inventory : MonoBehaviour
     public GameObject inventoryItem;
 
     [HideInInspector] public List<Slot> slotList = new List<Slot>(); //슬롯리스트 - 
-    [HideInInspector] public List<InvenItem> invenItemList = new List<InvenItem>(); //인벤아이템 - 
+    //[HideInInspector] public List<InvenItem> invenItemList = new List<InvenItem>(); //인벤아이템 - 
+    [HideInInspector] public List<ItemData> itemDataList = new List<ItemData>(); //인벤아이템 - 
 
     void Start()
     {
@@ -154,7 +155,7 @@ public class Inventory : MonoBehaviour
             slotList.Add(slot);
 
             //해당슬롯 빈 오브젝트정보 셋팅
-            invenItemList.Add(new InvenItem());
+            //invenItemList.Add(new InvenItem());
         }
     }
 
@@ -166,20 +167,21 @@ public class Inventory : MonoBehaviour
         for (int i = 0; i < database.db_InvenItem.Count; i++)
         {
             Slot slot = slotList[i];
-            ItemData itemData = Instantiate(inventoryItem, slot.transform).GetComponent<ItemData>();
+            ItemData itemData = Instantiate(inventoryItem/*, slot.transform*/).GetComponent<ItemData>();
 
             int itemId = database.db_InvenItem[i].itemId;
+            Debug.Log("itemId: " + itemId);
+            slot.itemId = itemId;
 
             ItemType itemType = database.GetItemType(itemId);
             itemData.name = "Item: " + itemType.title;
 
             InvenItem invenItem = database.GetInvenItem(itemId);
             invenItem.itemId = itemId;
-            invenItemList[i] = invenItem;
+            //invenItemList[i] = invenItem;
 
             itemData.SetItemData(i, invenItem);
-
-            slot.itemId = itemId;
+            itemDataList.Add(itemData);
 
 
         }
@@ -187,12 +189,56 @@ public class Inventory : MonoBehaviour
 
     public void SortItem()
     {
-        for (int i = 0; i < invenItemList.Count; i++)
+        for (int i = 0; i < itemDataList.Count; i++)
         {
-            if (invenItemList[i].itemId == -1) //비어있다면...
+            if (itemDataList[i].slotId == -1) //비어있다면...
             {
-                invenItemList.RemoveAt(i);
+                //invenItemList.RemoveAt(i);
+                //itemDataList.FirstOrDefault(x=>x.invenItem.itemId)
             }
+        }
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            SortItem();
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2)) //증가
+        {
+            slotList[itemDataList[4].slotId].itemId = -1;
+            itemDataList[4].slotId++;
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3)) //감소
+        {
+            //if (slotList[itemDataList[4].slotId - 1].itemId == -1)
+            //{
+            //    slotList[itemDataList[4].slotId].itemId = -1;
+            //    itemDataList[4].slotId--;
+            //}
+            itemDataList = itemDataList.OrderBy(x => x.slotId).ToList();
+            for (int i = 0; i < itemDataList.Count; i++)
+            {
+                IsSort(i);
+            }
+        }
+    }
+
+    void IsSort(int idx)
+    {
+        ItemData itemData = itemDataList[idx];
+        if(itemData.slotId == 0)
+        {
+            return;
+        }    
+        Slot prevSlot = slotList[itemData.slotId - 1];
+        Slot curSlot = slotList[itemData.slotId];
+        if (prevSlot != null && prevSlot.itemId == -1) //이전꺼가 아이템이 없으면
+        {
+            curSlot.itemId = -1; //현재꺼에 아이템 제거하고
+            itemData.slotId--; //슬롯점프
+            IsSort(idx);
         }
     }
 
@@ -202,8 +248,8 @@ public class Inventory : MonoBehaviour
     }
     public void RemoveItem(int slotId)
     {
-        //invenItemList.Remove(invenItem);
-        invenItemList[slotId] = new InvenItem();
+        slotList[slotId].itemId = -1;
+        SortItem();
     }
 }
 
