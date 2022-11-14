@@ -10,7 +10,7 @@ public class Tooltip : MonoBehaviour
 
 	void Start()
 	{
-		tooltip = GameObject.Find("Tooltip");
+		tooltip = GameObject.Find("go_Tooltip");
 		tooltip.SetActive(false);
 	}
 

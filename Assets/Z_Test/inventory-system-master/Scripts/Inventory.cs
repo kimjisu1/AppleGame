@@ -58,13 +58,13 @@ public class Inventory : MonoBehaviour
     #endregion
 
 
-    #region 아이템 초기화
+    #region 초기화 (슬롯 / 아이템)
     /// <summary>
     /// 슬롯 초기화 : 슬롯셋팅, 빈인벤아이템셋팅
     /// </summary>
     private void InitSlot()
     {
-        GameObject slotPanel = GameObject.Find("SlotPanel");
+        GameObject slotPanel = GameObject.Find("Content");
         for (int i = 0; i < slotAmount; i++)
         {
             //슬롯오브젝트 추가
@@ -97,10 +97,11 @@ public class Inventory : MonoBehaviour
     /// <param name="itemData"></param>
     public void CreateOrAddItem(int itemId)
     {
+        SortItem();
         ItemData findItemData = itemDataList.FirstOrDefault(x => x.invenItem.itemId == itemId);
         if (findItemData == null)
         {   //해당아이템이 없다면 -> 새로추가
-            CreateItem(new InvenItem(101, 10), slotList.FindIndex(x => x.itemId == -1));
+            CreateItem(new InvenItem(itemId, 10), slotList.FindIndex(x => x.itemId == -1));
         }
         else
         {   //만약 해당아이템이 있다면 -> 수량추가
@@ -143,7 +144,7 @@ public class Inventory : MonoBehaviour
     }
 
     /// <summary>
-    /// 아이템정렬 재귀함수
+    /// 아이템 정렬 재귀함수
     /// </summary>
     /// <param name="idx"></param>
     private void SortRecursion(int idx)

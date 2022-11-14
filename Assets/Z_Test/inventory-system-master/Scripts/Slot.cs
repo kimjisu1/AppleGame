@@ -15,6 +15,10 @@ public class Slot : MonoBehaviour, IDropHandler
 		inven = GameObject.Find("Inventory").GetComponent<Inventory>();
 	}
 
+    /// <summary>
+    /// 온드래그 : 슬롯에 드래그 했을 시
+    /// </summary>
+    /// <param name="eventData"></param>
     public void OnDrop(PointerEventData eventData)
     {
         ItemData droppedItemData = eventData.pointerDrag.GetComponent<ItemData>(); //드롭된 아이템
@@ -38,6 +42,13 @@ public class Slot : MonoBehaviour, IDropHandler
         }
         inven.itemDataList = inven.itemDataList.OrderBy(x => x.slotId).ToList();
     }
+
+    /// <summary>
+    /// 스왑
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="t1"></param>
+    /// <param name="t2"></param>
     private void Swap<T>(ref T t1, ref T t2)
     {
         T swapT = t1;

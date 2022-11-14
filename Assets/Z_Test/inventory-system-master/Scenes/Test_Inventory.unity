@@ -261,7 +261,7 @@ GameObject:
   - component: {fileID: 27708249}
   - component: {fileID: 27708248}
   m_Layer: 5
-  m_Name: InventoryPanel
+  m_Name: View_Inventory
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -279,14 +279,13 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2039589556}
-  - {fileID: 1419188631}
   m_Father: {fileID: 1938964930}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 156.3, y: -165.2}
-  m_SizeDelta: {x: 276, y: 294.4}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 275, y: 275}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &27708248
 MonoBehaviour:
@@ -338,7 +337,7 @@ GameObject:
   - component: {fileID: 86882314}
   - component: {fileID: 86882313}
   m_Layer: 5
-  m_Name: SlotPanel
+  m_Name: Content
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -429,9 +428,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 11114883}
+  - {fileID: 1854100102}
   - {fileID: 1938964930}
   - {fileID: 1748081272}
-  - {fileID: 1854100102}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -781,7 +780,7 @@ GameObject:
   - component: {fileID: 1183533029}
   - component: {fileID: 1183533033}
   m_Layer: 5
-  m_Name: Tooltip
+  m_Name: go_Tooltip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -800,11 +799,11 @@ RectTransform:
   m_Children:
   - {fileID: 1408019340}
   m_Father: {fileID: 1938964930}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -219, y: 229}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 150, y: 0}
   m_Pivot: {x: -0.1, y: 1}
 --- !u!114 &1183533029
@@ -1225,7 +1224,7 @@ GameObject:
   - component: {fileID: 1419188633}
   - component: {fileID: 1419188632}
   m_Layer: 5
-  m_Name: TitlePanel
+  m_Name: go_Title
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1238,18 +1237,18 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1419188630}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 225810097}
-  m_Father: {fileID: 27708247}
+  m_Father: {fileID: 1938964930}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -6.8}
-  m_SizeDelta: {x: 155.7, y: 30}
+  m_AnchoredPosition: {x: 0, y: -143.5}
+  m_SizeDelta: {x: 150, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1419188632
 MonoBehaviour:
@@ -1362,7 +1361,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 218860871}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1854100100
 GameObject:
@@ -1409,7 +1408,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 218860871}
-  m_RootOrder: 3
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1854100103
 MonoBehaviour:
@@ -1423,11 +1422,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96d7d37594450cb4a9555725035152b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slotAmount: 64
-  inventorySlot: {fileID: 169076, guid: 8590ae9dd07d18d49a49b092889561e8, type: 3}
   inventoryItem: {fileID: 197196, guid: 6baca13da4ff36d4e87e971092d2ffc1, type: 3}
+  inventorySlot: {fileID: 169076, guid: 8590ae9dd07d18d49a49b092889561e8, type: 3}
   slotList: []
-  invenItemList: []
+  itemDataList: []
+  slotAmount: 64
 --- !u!114 &1854100104
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1532,9 +1531,10 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 27708247}
+  - {fileID: 1419188631}
   - {fileID: 1183533028}
   m_Father: {fileID: 218860871}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1553,7 +1553,6 @@ GameObject:
   - component: {fileID: 2039589559}
   - component: {fileID: 2039589558}
   - component: {fileID: 2039589557}
-  - component: {fileID: 2039589560}
   m_Layer: 5
   m_Name: Scroll View
   m_TagString: Untagged
@@ -1578,10 +1577,10 @@ RectTransform:
   m_Father: {fileID: 27708247}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.000015259, y: -14.7}
-  m_SizeDelta: {x: 276, y: 265}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: -25}
+  m_SizeDelta: {x: 0, y: -50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2039589557
 MonoBehaviour:
@@ -1590,7 +1589,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2039589555}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1aa08ab6e0800fa44ae55d278d1423e3, type: 3}
   m_Name: 
@@ -1651,36 +1650,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2039589555}
   m_CullTransparentMesh: 1
---- !u!114 &2039589560
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2039589555}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab68159f809a0b34b99be9dd1a72d6c6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Content: {fileID: 86882312}
-  m_Horizontal: 1
-  m_Vertical: 1
-  m_MovementType: 2
-  m_Elasticity: 0.1
-  m_Inertia: 1
-  m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 1
-  m_Viewport: {fileID: 526523497}
-  m_HorizontalScrollbar: {fileID: 1337052760}
-  m_VerticalScrollbar: {fileID: 571527475}
-  m_HorizontalScrollbarVisibility: 0
-  m_VerticalScrollbarVisibility: 0
-  m_HorizontalScrollbarSpacing: 0
-  m_VerticalScrollbarSpacing: 0
-  m_OnValueChanged:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &2138975828
 GameObject:
   m_ObjectHideFlags: 0

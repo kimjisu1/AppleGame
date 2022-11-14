@@ -10,12 +10,13 @@ using System.Linq;
 
 public class ItemDatabase : MonoBehaviour
 {
+    public static ItemDatabase instance;
+
     public Dictionary<string, HomeType> db_HomeType = new Dictionary<string, HomeType>();
     public Dictionary<int, GridType> db_GridType = new Dictionary<int, GridType>();
     public Dictionary<int, ItemType> db_ItemType = new Dictionary<int, ItemType>();
     public List<InvenItem> db_InvenItem = new List<InvenItem>();
     public List<RoomItem> db_RoomItem = new List<RoomItem>();
-    public static ItemDatabase instance;
     private void Awake()
     {
         instance = this;

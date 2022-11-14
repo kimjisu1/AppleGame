@@ -12,7 +12,17 @@ using UnityEngine.UI;
 public class ItemData : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, IPointerClickHandler
 {
 
+    private Inventory inv;
+    private ItemDatabase database;
+
     public InvenItem invenItem { private set ; get; } //인벤토리
+    public Text txt_Stack;
+    
+    private Tooltip tooltip;
+    private Vector2 offset;
+    private Coroutine coroutine;
+
+    //슬롯아이디
     private int _slotId;
     public int slotId
     {
@@ -26,6 +36,7 @@ public class ItemData : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         }
     }
    
+    //남은스택
     private int _leftStack;
     public int leftStack
     {
@@ -33,7 +44,6 @@ public class ItemData : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         set
         {
             _leftStack = value;
-            stackk = value;
             if (value == 0)
             {
                 inv.RemoveItem(this);
@@ -41,9 +51,7 @@ public class ItemData : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
             txt_Stack.text = _leftStack.ToString();
         }
     }
-    public int stackk;
 
-    private Coroutine coroutine;
 
     public enum eItemState
     {
@@ -53,10 +61,10 @@ public class ItemData : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         move, //길게눌러 홀드한 상태에서 이동
         drag, //길게누르지않고 드래그
     }
-    private eItemState _itemState;
+    public eItemState _itemState;
     public eItemState itemState
     {
-        get { return _itemState; }
+        get => _itemState;
         set
         {
             _itemState = value;
@@ -92,14 +100,7 @@ public class ItemData : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     }
 
 
-    public Text txt_Stack;
-    private Inventory inv;
-    private Tooltip tooltip;
-    private Vector2 offset;
-
-    private ItemDatabase database;
-
-    void Start()
+    void Awake()
     {
         database = ItemDatabase.instance;
         inv = GameObject.Find("Inventory").GetComponent<Inventory>();
@@ -108,7 +109,6 @@ public class ItemData : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 
     public void SetItemData(int slotId, InvenItem invenItem)
     {
-        inv = GameObject.Find("Inventory").GetComponent<Inventory>();
         this.invenItem = invenItem;
         this.slotId = slotId;
         leftStack = this.invenItem.stack;
@@ -121,10 +121,9 @@ public class ItemData : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     /// <param name="eventData"></param>
     public void OnBeginDrag(PointerEventData eventData)
     {
-
         if (itemState == eItemState.press)
         {
-            GameObject.Find("Scroll View").GetComponent<Test_ScrollRect>().OnBeginDrag(eventData);
+            GetComponentInParent<ScrollRect>().OnBeginDrag(eventData);
             itemState = eItemState.drag;
             return;
         }
@@ -132,6 +131,7 @@ public class ItemData : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 
         this.transform.SetParent(this.transform.parent.parent);
         this.transform.position = eventData.position - offset;
+
         GetComponent<CanvasGroup>().blocksRaycasts = false;
 
     }
@@ -146,13 +146,13 @@ public class ItemData : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     {
         if (itemState != eItemState.move)
         {
-            GameObject.Find("Scroll View").GetComponent<Test_ScrollRect>().OnDrag(eventData);
+            GetComponentInParent<ScrollRect>().OnDrag(eventData);
             return;
         }
-        if (database.GetInvenItem(invenItem.itemId) != null)
-        {
-            this.transform.position = eventData.position - offset;
-        }
+        this.transform.position = eventData.position - offset;
+        //if (database.GetInvenItem(invenItem.itemId) != null)
+        //{
+        //}
     }
 
 
@@ -164,13 +164,14 @@ public class ItemData : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     {
         if (itemState != eItemState.move)
         {
-            GameObject.Find("Scroll View").GetComponent<Test_ScrollRect>().OnEndDrag(eventData);
+            GetComponentInParent<ScrollRect>().OnEndDrag(eventData);
             return;
         }
         itemState = eItemState.idle;
 
         this.transform.SetParent(inv.slotList[slotId].transform);
         this.transform.position = inv.slotList[slotId].transform.position;
+
         GetComponent<CanvasGroup>().blocksRaycasts = true;
     }
 
@@ -187,6 +188,7 @@ public class ItemData : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 
     void StartPress()
     {
+        StopPress();
         coroutine = StartCoroutine(Co_StartHolding());
     }
     private IEnumerator Co_StartHolding()
