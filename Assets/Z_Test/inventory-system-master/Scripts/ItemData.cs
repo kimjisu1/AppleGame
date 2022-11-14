@@ -17,6 +17,7 @@ public class ItemData : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 
     public InvenItem invenItem { private set ; get; } //인벤토리
     public Text txt_Stack;
+    public string category; //아이템 카테고리
     
     private Tooltip tooltip;
     private Vector2 offset;
@@ -112,7 +113,11 @@ public class ItemData : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         this.invenItem = invenItem;
         this.slotId = slotId;
         leftStack = this.invenItem.stack;
-        transform.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Items/" + ItemDatabase.instance.db_ItemType[invenItem.itemId].slug);
+
+        ItemType itemType = database.GetItemType(invenItem.itemId);
+        gameObject.name = "Item: " + itemType.title;
+        category = itemType.categoryType.ToString();
+        transform.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Items/" + itemType.slug);
     }
 
     /// <summary>

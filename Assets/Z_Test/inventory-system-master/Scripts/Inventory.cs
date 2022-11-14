@@ -116,14 +116,10 @@ public class Inventory : MonoBehaviour
     /// <param name="slotId">어떤슬롯에 추가될 것인지</param>
     private void CreateItem(InvenItem invenItem, int slotId)
     {
-        ItemData itemData = Instantiate(inventoryItem).GetComponent<ItemData>();
-
         Slot slot = slotList[slotId];
         slot.itemId = invenItem.itemId;
 
-        ItemType itemType = database.GetItemType(invenItem.itemId);
-        itemData.name = "Item: " + itemType.title;
-
+        ItemData itemData = Instantiate(inventoryItem).GetComponent<ItemData>();
         itemData.SetItemData(slotId, invenItem);
         itemDataList.Add(itemData);
     }
