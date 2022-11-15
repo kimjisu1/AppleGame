@@ -1,6 +1,8 @@
 using Hypertonic.GridPlacement.Enums;
 using Hypertonic.GridPlacement.Models;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -17,7 +19,7 @@ namespace Hypertonic.GridPlacement.Example.BasicDemo
     {
         //[SerializeField]
         //private List<GameObject> _gridObjectPrefabs = new List<GameObject>();
-        Test_Grid grid;
+        private Test_Grid grid;
 
         private void Start()
         {
@@ -52,9 +54,9 @@ namespace Hypertonic.GridPlacement.Example.BasicDemo
 
             }
             string saveDataAsJson = JsonUtility.ToJson(_gridData);
-            Debug.Log("saveDataAsJson: " + saveDataAsJson);
-            PlayerPrefs.SetString(GRIDMANAGER, saveDataAsJson);
-
+            //Debug.Log("saveDataAsJson: " + saveDataAsJson);
+            //PlayerPrefs.SetString(GRIDMANAGER, saveDataAsJson);
+            File.WriteAllText(Application.dataPath + "/StreamingAssets/RoomItem.json", saveDataAsJson);
         }
 
         public void HandleLoadGridObjectsPressed(_SaveData _saveData)
@@ -117,20 +119,20 @@ namespace Hypertonic.GridPlacement.Example.BasicDemo
     }
 
 
-    [System.Serializable]
+    [Serializable]
 
     public class _GridData
     {
         public List<_SaveData> _saveDatas = new List<_SaveData>();
     }
-    [System.Serializable]
+    [Serializable]
     public class _SaveData
     {
         public string gridId;
         public List<_GridObjectSaveData> _gridObjectSaveDatas = new List<_GridObjectSaveData>();
     }
 
-    [System.Serializable]
+    [Serializable]
     public class _GridObjectSaveData
     {
         public string prefabName;

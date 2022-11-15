@@ -472,9 +472,11 @@ using Hypertonic.GridPlacement.Models;
 using Newtonsoft.Json.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class Test_Grid : MonoBehaviour
@@ -493,7 +495,7 @@ public class Test_Grid : MonoBehaviour
     public float rotateSpeed;
     public float zoomSpeed;
     private bool isValid;
-    private List<Texture2D> thumbnailList = new List<Texture2D>();
+    public List<Texture2D> thumbnailList = new List<Texture2D>();
 
     private string[] strArr = new string[] { "AAA", "BBB" };
 
@@ -501,14 +503,13 @@ public class Test_Grid : MonoBehaviour
     /// <summary>
     /// 인벤시스템 구현하자..!!
     /// </summary>
-    private void Start()
+    private void Awake()
     {
         gridSaveManager = gameObject.AddComponent<GridSaveManager_Custom>();
         for (int i = 0; i < prefabs.Length; i++)
         {
             thumbnailList.Add(RuntimePreviewGenerator.GenerateModelPreview(prefabs[i].transform, 512, 512));
         }
-
     }
 
 
@@ -557,6 +558,10 @@ public class Test_Grid : MonoBehaviour
     public void OnClick_Inven()
     {
         CurrentMethodName();
+
+        int itemId = ItemDatabase.instance.db_ItemType.FirstOrDefault(x => x.Value.prefabName == curObj.name).Key;
+        MinusRoomItem(itemId);
+
         cover.SetActive(false);
         pivot.SetActive(false);
         curObj = null;
@@ -569,8 +574,10 @@ public class Test_Grid : MonoBehaviour
         return;
         Debug.Log(MethodBase.GetCurrentMethod().Name);
     }
+
     private void OnGUI()
     {
+        return;
         if (curObj != null)
         {
             return;
@@ -579,15 +586,28 @@ public class Test_Grid : MonoBehaviour
         {
             if (GUI.Button(new Rect(i * 150, 0, 150, 150), new GUIContent(thumbnailList[i])))
             {
-
-                GameObject obj = Instantiate(prefabs[i], GridManagerAccessor.GridManager.GetGridPosition(), new Quaternion());
-                obj.name = prefabs[i].name;
-                SelectObj(obj);
+                int capture = i;
+                PlusRoomItem(capture);
             }
         }
     }
 
-    void SelectObj(GameObject obj)
+    /// <summary>
+    /// 룸아이템 추가
+    /// </summary>
+    /// <param name="itemId"></param>
+    public void PlusRoomItem(int itemId)
+    {
+        GameObject obj = Instantiate(prefabs[itemId], GridManagerAccessor.GridManager.GetGridPosition(), new Quaternion());
+        obj.name = prefabs[itemId].name;
+        SelectRoomItem(obj);
+    }
+
+    /// <summary>
+    /// 오브젝트 설치
+    /// </summary>
+    /// <param name="obj"></param>
+    public void SelectRoomItem(GameObject obj)
     {
         cover.SetActive(true);
 
@@ -618,7 +638,7 @@ public class Test_Grid : MonoBehaviour
         GridManagerAccessor.GridManager.HandleGridObjectRotated();
     }
 
-    void SelectedGridManager(string gridKey)
+    private void SelectedGridManager(string gridKey)
     {
         //Debug.Log("Select : " + gridKey);
         GridManagerAccessor.GridManager.OnPlacementValidated -= GridManager_OnPlacementValidated;
@@ -626,31 +646,54 @@ public class Test_Grid : MonoBehaviour
         GridManagerAccessor.GridManager.OnPlacementValidated += GridManager_OnPlacementValidated;
     }
 
-    void Save()
+    public void Save()
     {
+        Debug.Log(MethodBase.GetCurrentMethod().Name);
         gridSaveManager.HandleSaveGridObjectsPressed(strArr);
     }
-    void Load()
+    public void Load()
     {
+        Debug.Log(MethodBase.GetCurrentMethod().Name);
         pivot.transform.SetParent(null);
 
-        string saveDataAsJson = PlayerPrefs.GetString("GRIDMANAGER");
+        string saveDataAsJson = File.ReadAllText(Application.dataPath + "/StreamingAssets/RoomItem.json");
+        //string saveDataAsJson = PlayerPrefs.GetString("GRIDMANAGER");
         _GridData _gridData = JsonUtility.FromJson<_GridData>(saveDataAsJson);
 
         for (int i = 0; i < _gridData._saveDatas.Count; i++)
         {
-            SelectedGridManager(_gridData._saveDatas[i].gridId);
+            _SaveData _saveData = _gridData._saveDatas[i];
+            RoomItemInit(_saveData._gridObjectSaveDatas);
+            SelectedGridManager(_saveData.gridId);
             gridSaveManager.HandleLoadGridObjectsPressed(_gridData._saveDatas[i]);
         }
     }
 
+    /// <summary>
+    /// 룸아이템 초기셋업
+    /// </summary>
+    /// <param name="_GridObjectSaveDatas"></param>
+    private void RoomItemInit(List<_GridObjectSaveData> _GridObjectSaveDatas)
+    {
+        for (int i = 0; i < _GridObjectSaveDatas.Count; i++)
+        {
+            int itemId = ItemDatabase.instance.db_ItemType.FirstOrDefault(x => x.Value.prefabName == _GridObjectSaveDatas[i].prefabName).Key;
+            InitRoomItem(itemId);
+        }
+    }
+
+    public delegate void RoomItem(int idx);
+
+    public RoomItem InitRoomItem; //룸아이템 초기셋업
+    public RoomItem MinusRoomItem; //룸아이템 빼기
+
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (Input.GetKeyDown(KeyCode.Alpha9))
         {
             Save();
         }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
+        if (Input.GetKeyDown(KeyCode.Alpha0))
         {
             Load();
         }
@@ -693,13 +736,17 @@ public class Test_Grid : MonoBehaviour
         }
         if (Input.GetMouseButtonDown(0))
         {
+            if(EventSystem.current.IsPointerOverGameObject())
+            {
+                return;
+            }
             Vector3 mousePosition = Input.mousePosition;
             Ray ray = Camera.main.ScreenPointToRay(mousePosition, Camera.MonoOrStereoscopicEye.Mono);
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
                 if (hit.transform.GetComponent<GridHeightPositioner>() != null)
                 {
-                    SelectObj(hit.transform.gameObject);
+                    SelectRoomItem(hit.transform.gameObject);
                 }
             }
         }

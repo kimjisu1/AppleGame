@@ -38,10 +38,11 @@ public class ItemData : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
                 return;
             }
             Slot slot = inv.slotList[slotId];
-            transform.SetParent(slot.transform);
-            transform.localPosition = Vector3.zero;
-            gameObject.SetActive(true);
             slot.itemId = invenItem.itemId;
+            transform.SetParent(slot.transform, false);
+            transform.localPosition = Vector3.zero;
+            transform.localScale = Vector3.one;
+            gameObject.SetActive(true);
         }
     }
 
@@ -65,9 +66,9 @@ public class ItemData : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     /// 아이템셋팅
     /// </summary>
     /// <param name="itemId"></param>
-    void OnClick_ItemSetting(int itemId)
+    void OnClick_InvenItemMinus(int itemId)
     {
-
+        inv.MinusInvenItem(itemId);
     }
 
     public enum eItemState
@@ -124,6 +125,16 @@ public class ItemData : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         tooltip = inv.GetComponent<Tooltip>();
     }
 
+    public static Sprite Tex2Sprite(Texture2D _tex)
+    {
+        return Sprite.Create(_tex, new Rect(0, 0, _tex.width, _tex.height), new Vector2(0.5f, 0.5f));
+    }
+
+    /// <summary>
+    /// 데이터 초기화
+    /// </summary>
+    /// <param name="slotId"></param>
+    /// <param name="invenItem"></param>
     public void SetItemData(int slotId, InvenItem invenItem)
     {
         this.invenItem = invenItem;
@@ -131,9 +142,9 @@ public class ItemData : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         leftStack = this.invenItem.stack;
         gameObject.name = "Item: " + itemType.title;
         category = itemType.categoryType.ToString();
-        transform.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Items/" + itemType.slug);
-
-        if (inv.categoryIdx != -1 || inv.categoryIdx == itemType.categoryType)
+        //transform.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/Items/" + itemType.slug);
+        transform.GetComponent<Image>().sprite = Tex2Sprite(ItemDatabase.instance.test_Grid.thumbnailList[slotId]);
+        if (inv.categoryType != -1 || inv.categoryType == itemType.categoryType)
         {
             this.slotId = slotId;
         }
@@ -256,7 +267,7 @@ public class ItemData : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
             itemState = eItemState.idle;
             leftStack--;
             int itemId = eventData.pointerDrag.GetComponent<ItemData>().invenItem.itemId;
-            OnClick_ItemSetting(itemId);
+            OnClick_InvenItemMinus(itemId);
         }
         if(itemState == eItemState.hold)
         {

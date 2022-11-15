@@ -11,7 +11,13 @@ public class Inventory : MonoBehaviour
     [HideInInspector] public List<Slot> slotList = new List<Slot>(); //슬롯리스트 - 
     [HideInInspector] public List<ItemData> itemDataList = new List<ItemData>(); //인벤아이템리스트 - 
     public int slotAmount = 16;
+    public int categoryType;
+    public delegate void InvenItem(int idx);
+    public InvenItem MinusInvenItem; //룸아이템 생성
 
+    /// <summary>
+    /// 토글 초기화
+    /// </summary>
     private void InitToggle()
     {
         GameObject tab = GameObject.Find("go_Tab");
@@ -22,10 +28,15 @@ public class Inventory : MonoBehaviour
             togs[i].onValueChanged.AddListener((b) => { if (b) OnValueChanged_Tab(catrgoryType); });
         }
     }
-    public int categoryIdx;
+
+
+    /// <summary>
+    /// 탭 눌렀을 때 아이템 카테고리에 따라 정렬
+    /// </summary>
+    /// <param name="categoryType"></param>
     void OnValueChanged_Tab(int categoryType)
     {
-        categoryIdx = categoryType;
+        this.categoryType = categoryType;
         for (int i = 0; i < slotList.Count; i++)
         {
             slotList[i].itemId = -1;
@@ -68,6 +79,32 @@ public class Inventory : MonoBehaviour
     /// </summary>
     private void Start()
     {
+        //Init();
+    }
+
+    /// <summary>
+    /// 데이터 초기화
+    /// </summary>
+    void ClearData()
+    {
+        foreach (var item in itemDataList)
+        {
+            Destroy(item.gameObject);
+        }
+        itemDataList.Clear();
+        foreach (var item in slotList)
+        {
+            Destroy(item.gameObject);
+        }
+        slotList.Clear();
+    }
+
+    /// <summary>
+    /// 루프를 돌리기위한 초기함수
+    /// </summary>
+    public void Init()
+    {
+        ClearData();
         InitToggle(); //토글초기화
         InitSlot(); //슬롯초기화
         InitItem(); //아이템초기화
@@ -83,16 +120,16 @@ public class Inventory : MonoBehaviour
         {
             SortItem();
         }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            CreateOrAddItem(0);
-            OnValueChanged_Tab(categoryIdx);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            CreateOrAddItem(101);
-            OnValueChanged_Tab(categoryIdx);
-        }
+        //if (Input.GetKeyDown(KeyCode.Alpha2))
+        //{
+        //    CreateOrAddItem(0);
+        //    OnValueChanged_Tab(categoryIdx);
+        //}
+        //if (Input.GetKeyDown(KeyCode.Alpha3))
+        //{
+        //    CreateOrAddItem(101);
+        //    OnValueChanged_Tab(categoryIdx);
+        //}
         //if (Input.GetKeyDown(KeyCode.Alpha2)) //증가
         //{
         //    slotList[itemDataList[4].slotId].itemId = -1;
@@ -105,6 +142,7 @@ public class Inventory : MonoBehaviour
         //}
     }
     #endregion
+
 
 
     #region 초기화 (슬롯 / 아이템)
@@ -131,7 +169,7 @@ public class Inventory : MonoBehaviour
     {
         for (int i = 0; i < ItemDatabase.instance.db_InvenItem.Count; i++)
         {
-            InvenItem invenItem = ItemDatabase.instance.db_InvenItem[i];
+            global::InvenItem invenItem = ItemDatabase.instance.db_InvenItem[i];
             CreateItem(invenItem, i);
         }
     }
@@ -144,13 +182,13 @@ public class Inventory : MonoBehaviour
     /// 아이템 생성 / 추가
     /// </summary>
     /// <param name="itemData"></param>
-    public void CreateOrAddItem(int itemId)
+    public void PlusInvenItem(int itemId)
     {
         SortItem();
         ItemData findItemData = itemDataList.FirstOrDefault(x => x.invenItem.itemId == itemId);
         if (findItemData == null)
         {   //해당아이템이 없다면 -> 새로추가
-            CreateItem(new InvenItem(itemId, 10), slotList.FindIndex(x => x.itemId == -1));
+            CreateItem(new global::InvenItem(itemId, 10), slotList.FindIndex(x => x.itemId == -1));
         }
         else
         {   //만약 해당아이템이 있다면 -> 수량추가
@@ -163,7 +201,7 @@ public class Inventory : MonoBehaviour
     /// </summary>
     /// <param name="invenItem">아이템종류</param>
     /// <param name="slotId">어떤슬롯에 추가될 것인지</param>
-    private void CreateItem(InvenItem invenItem, int slotId)
+    private void CreateItem(global::InvenItem invenItem, int slotId)
     {
         Slot slot = slotList[slotId];
         slot.itemId = invenItem.itemId;
@@ -214,7 +252,7 @@ public class Inventory : MonoBehaviour
 
     #region 아이템 제거
     /// <summary>
-    /// 아이템 제거
+    /// 인벤토리에서 아이템 제거
     /// </summary>
     /// <param name="itemData"></param>
     public void RemoveItem(ItemData itemData)
@@ -223,6 +261,16 @@ public class Inventory : MonoBehaviour
         itemDataList.Remove(itemData);
         Destroy(itemData.gameObject);
         SortItem();
+    }
+
+    /// <summary>
+    /// 인벤토리에서 아이템 감소 -> leftStack이 0이 되면 제거
+    /// </summary>
+    /// <param name="itemIdx"></param>
+    public void InitInvenItem(int itemIdx)
+    {
+        ItemData itemData = itemDataList.FirstOrDefault(x => x.invenItem.itemId == itemIdx);
+        itemData.leftStack--;
     }
     #endregion
 }

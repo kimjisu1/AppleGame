@@ -20,15 +20,17 @@ public class ItemDatabase : MonoBehaviour
     private void Awake()
     {
         instance = this;
-        LoadDB();
+        //LoadDB();
     }
+
+    public Test_Grid test_Grid;
 
     /// <summary>
     /// 
     /// </summary>
-    void LoadDB()
+   public void LoadDB()
     {
-        JObject jobj = (JObject)JsonConvert.DeserializeObject(File.ReadAllText(Application.dataPath + "/StreamingAssets/DB.json"));
+        JObject jobj = (JObject)JsonConvert.DeserializeObject(File.ReadAllText(Application.dataPath + "/StreamingAssets/InvenItem.json"));
         foreach (var x in jobj)
         {
             string data = x.Value.ToString();
@@ -86,7 +88,7 @@ public class ItemType
 {
     public int itemId { get; set; }
     public int gridId { get; set; }
-    public string itemName { get; set; }
+    public string prefabName { get; set; }
     public int categoryType { get; set; }
     public int priceType { get; set; }
     public string title { get; set; }
